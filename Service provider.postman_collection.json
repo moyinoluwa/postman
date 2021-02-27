@@ -1,0 +1,182 @@
+{
+	"info": {
+		"_postman_id": "3a428075-ff9c-447a-9252-33357ec2f33f",
+		"name": "Service provider",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Valid response with status code 200\", function () {\r",
+							"     pm.response.to.have.status(200);\r",
+							"     pm.response.to.be.ok\r",
+							"});\r",
+							"\r",
+							"\r",
+							"var easyMoni = JSON.parse(responseBody);\r",
+							"pm.test(\"Succces Message\", function () {\r",
+							"    pm.expect(easyMoni.message).to.eql('Successful')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Request is successful\", function () {\r",
+							"  pm.expect(easyMoni.requestSuccessful).to.eql(true)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"First and Last names are present and not empty\", function () {\r",
+							"     pm.expect(easyMoni.responseData.firstName).to.eql('Nalat');\r",
+							"     pm.expect(easyMoni.responseData.lastName).to.eql('Muda');\r",
+							"});\r",
+							"\r",
+							"var accessToken = easyMoni.responseData.token.token\r",
+							"pm.environment.set(\"access_token\", accessToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"info@spaceso2o.com\",\r\n  \"password\": \"Rensource1$\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{serviceURL}}/partner/Auth/login",
+					"host": [
+						"{{serviceURL}}"
+					],
+					"path": [
+						"partner",
+						"Auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "+ve assertion for service provider",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"billerId\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"name\");\r",
+							"});\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"billCategoryId\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serviceURL}}/partner/airtime/providers",
+					"host": [
+						"{{serviceURL}}"
+					],
+					"path": [
+						"partner",
+						"airtime",
+						"providers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "-ve assertion for service provider",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.be.unauthorized\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "file",
+					"file": {}
+				},
+				"url": {
+					"raw": "{{serviceURL}}/partner/airtime/providers",
+					"host": [
+						"{{serviceURL}}"
+					],
+					"path": [
+						"partner",
+						"airtime",
+						"providers"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
